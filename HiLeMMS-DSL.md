@@ -19,7 +19,7 @@
 
 4. We may need to have two types of wraps functions, one will go through each spatial grid, the other will also loop over the particle velocity space. 
 
-5. Four elementary indexation may be necessary for defining kernel function, i.e., indexation over the particle velocity space, $\xi=(c_x,c_y,c_z)$, physical space, $\Omega=(x,y,z)$,  the indexation over the component space $\mathcal{C}$, and the indexation over the macrosopic ID space $\mathcal{M}$.
+5. Four elementary indexation may be necessary for defining kernel function, i.e., indexation over the particle velocity space, $`\xi=(c_x,c_y,c_z)`$, physical space, $`\Omega=(x,y,z)`$,  the indexation over the component space $`\mathcal{C}`$, and the indexation over the macrosopic ID space $`\mathcal{M}`$.
 
 6. The latter two kind of indexation schemes are due to the flexibility of allowing an application developer to define components and macroscopic etc. A backend code including its wrapper will not know these information beforehand, thus cannot know which component a scheme will operate on, the application developer has to use the indexation mechanism to pass the exact information to the backend code.
 
@@ -175,20 +175,20 @@ In this version, we will implement the functionalities allowing customisable ing
 
 According to the assumptions  Capability 2 and 3, and those of implementation, we can have the following type of variables and the indexation needed by them.
 
-|            Variable Type             | $\xi$ | $\Omega$ | $\mathcal{C}$ | $\mathcal{M}$ | Index Type |
+|            Variable Type             | $`\xi`$ | $`\Omega`$ | $`\mathcal{C}`$ | $`\mathcal{M}`$ | Index Type |
 | :----------------------------------: | :---: | :------: | :-----------: | :-----------: | :--------: |
-|   $f$, $f^{eq}$, $g$ (force term)    |   ✔︎   |    ✔︎     |       ✔︎       |       ✕       |     A      |
-|  $c_x$, $c_y$, $c_z$, $w$ (weight)   |   ✔︎   |    ✕     |       ✔︎       |       ✕       |     B      |
-| $\rho$,  $u$, $v$, $w$, $\sigma$ etc |   ✕   |    ✔︎     |       ✔︎       |       ✔︎       |     C      |
-|            $x$, $y$, $z$             |   ✕   |    ✔︎     |       ✕       |       ✕       |     D      |
+|   $`f`$, $`f^{eq}`$, $`g`$ (force term)    |   ✔︎   |    ✔︎     |       ✔︎       |       ✕       |     A      |
+|  $`c_x`$, $`c_y`$, $`c_z`$, $`w`$ (weight)   |   ✔︎   |    ✕     |       ✔︎       |       ✕       |     B      |
+| $`\rho`$,  $`u`$, $`v`$, $`w`$, $`\sigma`$ etc |   ✕   |    ✔︎     |       ✔︎       |       ✔︎       |     C      |
+|            $`x`$, $`y`$, $`z`$             |   ✕   |    ✔︎     |       ✕       |       ✕       |     D      |
 
 #### Indexation type
 
-1. **Relative indexation** means the starting point for indexation is the current  local point, e.g., for the Coordinate $x$, 0 means current point,, -1 the left side, 1, the right side.
+1. **Relative indexation** means the starting point for indexation is the current  local point, e.g., for the Coordinate $`x`$, 0 means current point,, -1 the left side, 1, the right side.
 
-2. **Absolute indexation** gives the absolute index of a variable. For example, $\textbf{c}_1$ with an absolute index could  the 1st discrete velocity within the lattice structure. 
+2. **Absolute indexation** gives the absolute index of a variable. For example, $`\textbf{c}_1`$ with an absolute index could  the 1st discrete velocity within the lattice structure. 
 
-In general the indexation schemes in $\xi$ , $\mathcal{C}$ and $\mathcal{M}$ are likely to be absolute, and the one in $\Omega$ may be relative. 
+In general the indexation schemes in $`\xi`$ , $`\mathcal{C}`$ and $`\mathcal{M}`$ are likely to be absolute, and the one in $`\Omega`$ may be relative. 
 
 For absolute indexation, the application developer will be responsible for defining loop type of operation. 
 
@@ -196,7 +196,7 @@ For relative indexation, the loop type operation will be conducted automatically
 
 #### Loop over indexing space
 
-Assuming the domain decomposition is used for parallelisation, we will need to have such a loop function that iterates the operation defined by users over the space $\Omega$, i.e., hides the underlying details for parallelism. 
+Assuming the domain decomposition is used for parallelisation, we will need to have such a loop function that iterates the operation defined by users over the space $`\Omega`$, i.e., hides the underlying details for parallelism. 
 
 In general a reasonable underlying library will provide similar facilities for this purpose. Hence, the loop function is to provide necessary wrapper or code generation tool for the translation. 
 
@@ -224,9 +224,9 @@ These functions are the key part, C/C++ macros might be a way  for implementatio
 #### An example kernel function for  a “new“ equilibrium
 
 Assuming the equilibrium reads 
-$$
+$`
 f_\alpha =w_\alpha \rho_\alpha \left( {\textbf{c}_\alpha} \cdot \textbf{V}+\frac{du}{dx}\right)
-$$
+`$
 
 The code may looks that
 
