@@ -129,13 +129,14 @@ void DefineMacroVars(VariableTypes types,
 //types: types of macroscopic variables
 //names: A vector containing names of macroscopic variables
 //varId: A vector containing the ID of variables
+// May not be necessary
 //compoId: which component the variables belong to
 ```
 
 **Description:** Define the macroscopic variables needed in the simulation. By specifying types, a backend code will provide default algorithms of calculating them (e.g., density velocity etc.). 
 
 ```c++
-DefineEquilibriumTerm(EquilibriumType types,
+void DefineEquilibriumTerm(EquilibriumType types,
                       std::vector<int> compoId)
 //types: which kind of equilibrium function to use
 //compoId: which component to act on
@@ -145,7 +146,7 @@ DefineEquilibriumTerm(EquilibriumType types,
 
 
 ```c++
-DefineForceTerm(ForceType types,
+void DefineForceTerm(ForceType types,
                 std::vector<int> compoId)
 //types: which kind of force function to use
 //compoId: which component to act on
@@ -154,12 +155,12 @@ DefineForceTerm(ForceType types,
 
 
 ```c++
-Iterate(SchemeType scheme,
+void Iterate(SchemeType scheme,
         const int steps,
         const int checkPointPeriod)
 //scheme: which scheme to use, for implementing such as
 //finite difference scheme.
-Iterate(SchemeType scheme,
+void Iterate(SchemeType scheme,
         const Real convergenceCriteria,
         const int checkPointPeriod)
 
@@ -175,12 +176,12 @@ In this version, we will implement the functionalities allowing customisable ing
 
 According to the assumptions  Capability 2 and 3, and those of implementation, we can have the following type of variables and the indexation needed by them.
 
-|            Variable Type             | $`\xi`$ | $`\Omega`$ | $`\mathcal{C}`$ | $`\mathcal{M}`$ | Index Type |
+|            Variable Type             | $0$ | $1$ | $2$ | $3$ | Index Type |
 | :----------------------------------: | :---: | :------: | :-----------: | :-----------: | :--------: |
-|   $`f`$, $`f^{eq}`$, $`g`$ (force term)    |   ✔︎   |    ✔︎     |       ✔︎       |       ✕       |     A      |
-|  $`c_x`$, $`c_y`$, $`c_z`$, $`w`$ (weight)   |   ✔︎   |    ✕     |       ✔︎       |       ✕       |     B      |
-| $`\rho`$,  $`u`$, $`v`$, $`w`$, $`\sigma`$ etc |   ✕   |    ✔︎     |       ✔︎       |       ✔︎       |     C      |
-|            $`x`$, $`y`$, $`z`$             |   ✕   |    ✔︎     |       ✕       |       ✕       |     D      |
+|   $0$, $1$, $2$ (force term)    |   ✔︎   |    ✔︎     |       ✔︎       |       ✕       |     A      |
+|  $0$, $1$, $2$, $3$ (weight)   |   ✔︎   |    ✕     |       ✔︎       |       ✕       |     B      |
+| $0$,  $1$, $2$, $3$, $4$ etc |   ✕   |    ✔︎     |       ✔︎       |       ✔︎       |     C      |
+|            $0$, $1$, $2$             |   ✕   |    ✔︎     |       ✕       |       ✕       |     D      |
 
 #### Indexation type
 
