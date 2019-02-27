@@ -52,7 +52,7 @@
 * **Macroscopic variable**
   There are two types of macroscopic variables, moments and others.  **Moments** are obtained by integrating the distribution function over the particle velocity space. For instance, the density is the zeroth order moment. In a number of applications, macroscopic variables other than moments are necessary.  For instance, the so-called solid fraction is introduced. Typically, such variables are not calculated from the distribution function.
 
-  Regular moments can be obtained by pre-defined routines while users must provide user-defined routines.
+  Regular moments can be obtained by pre-defined functions while users must provide user-defined functions.
 
   A confusing point for regular moments is the treatment of body force terms. If there is a body force, one needs to modify the manner of calculating moment, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998).
 * **Equilibrium**
@@ -60,26 +60,36 @@
 
   **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the body-force and time step.**
 
-  We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium routine. A tricky issue is caused again by the DDF approach for the advection-diffusion problem, where the equilibrium function of the advection-diffusion part depends on the velocity governed by the momentum equations.
+  We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium function. A tricky issue is caused again by the DDF approach for the advection-diffusion problem, where the equilibrium function of the advection-diffusion part depends on the velocity governed by the momentum equations.
 
-  A user-defined routine is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined routines (as defined in the second phase).
+  A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).
 
 * **Force**
 
 * **Initial condition**
   A initial condition of a specific problem is in general defined using macroscopic variables varying over space.  For a kinetic theory based method, however, we need to one more initialization  process,  i.e., transformation from macroscopic information into mesoscopic. In this sense, we can have different method, including equilibrium, Chapman-Enskog expansion, etc.
-  In this project, **we will introduce a user-defined routine, which depends on coordinates, node property etc, to initialize all macroscopic variables. The distribution may be initialized by providing a few default options including the equilibrium one. Of course, a user-defined routine can also be introduced.**
+  In this project, **we will introduce a user-defined function, which depends on coordinates, node property etc, to initialize all macroscopic variables. The distribution may be initialized by providing a few default options including the equilibrium one. Of course, a user-defined function can also be introduced.**
 
 * **Boundary condition**
   Boundary may be split into two general types, i.e., the block boundary and the embedded boundary.  A block boundary is defined at a surface of  a block.
 
 * Embedded boundary condition
-* 
+*
 ### Remarks on the implementation
 
 * **Kernel function**
-  A kernel function conducts a specific set of operations on a grid node. It will be populated to the whole flow field. 
+  A kernel function conducts a specific set of operations on a grid node. It will be populated to the whole flow field. Computationally, it is consistent with the definition of kernel function in such as the CUDA context.
 
+  In writing/designing kernel function, it is better to use only C syntax. For instance, std::vector may not be recognized by the compiler for the device like GPU. This becomes a restrictive requirement when we need to deal with different choices of users.
+* **User-defined functions**
+  A user-defined function (UDF) is introduced by users to implement new functionalities. In general, a UDF will be a kernel function.
+
+* **Code generation**
+  Code generation is the process that generates UDFs automatically.
+
+  Before thinking about the code generation, an intermediate step is to find how the UDF should be written.
+
+  Since the code generation may not be able to cover all requirements, it is important to keep facilities for users to write UDFs, e.g., helpful instructions. The tricky point is that many versions UDFs have to be written for various backends.
 
 ### Regarding capabilities
 
@@ -115,7 +125,7 @@ In this version, we will aim to define a IDSL which provides a unified interface
 ####  Preprocessing
 **We note that, although there appears no advanced ingredients in this version (cf. the second version), the task could be not easy if a backend code does not allow the flexibility stated by Capability 2**. If this is the case,  considered amount of efforts will be needed to either modify the backend code or develop the wrapper/code generation tool.
 
-Meanwhile, if the capability 2 is realised, we will obtain a natural foundation for implementing the ingredients defined in the Version 2.
+Meanwhile, if the capability 2 is realized, we will obtain a natural foundation for implementing the ingredients defined in the Version 2.
 
 ```c++
 void DefineCase(std::string caseName, const int spaceDim)
