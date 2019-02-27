@@ -57,14 +57,15 @@
   A confusing point for regular moments is the treatment of body force terms. If there is a body force, one needs to modify the manner of calculating moment, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998).
 * **Equilibrium**
   Equilibrium function determines the capability of an lattice Boltzmann simulation for various applications, which is of primary importance.
-  
+
   **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the body-force and time step.**
 
-  We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium routine. 
+  We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium routine. A tricky issue is caused again by the DDF approach for the advection-diffusion problem, where the equilibrium function of the advection-diffusion part depends on the velocity governed by the momentum equations.
 
   A user-defined routine is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined routines (as defined in the second phase).
+
 * **Force**
-  
+
 * **Initial condition**
   A initial condition of a specific problem is in general defined using macroscopic variables varying over space.  For a kinetic theory based method, however, we need to one more initialization  process,  i.e., transformation from macroscopic information into mesoscopic. In this sense, we can have different method, including equilibrium, Chapman-Enskog expansion, etc.
   In this project, **we will introduce a user-defined routine, which depends on coordinates, node property etc, to initialize all macroscopic variables. The distribution may be initialized by providing a few default options including the equilibrium one. Of course, a user-defined routine can also be introduced.**
@@ -73,6 +74,11 @@
   Boundary may be split into two general types, i.e., the block boundary and the embedded boundary.  A block boundary is defined at a surface of  a block.
 
 * Embedded boundary condition
+* 
+### Remarks on the implementation
+
+* **Kernel function**
+  A kernel function conducts a specific set of operations on a grid node. It will be populated to the whole flow field. 
 
 
 ### Regarding capabilities
