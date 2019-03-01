@@ -56,6 +56,7 @@
 
   A confusing point for regular moments is the treatment of body force terms. If there is a body force, one needs to modify the manner of calculating moment, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998).
 * **Equilibrium**
+  
   Equilibrium function determines the capability of an lattice Boltzmann simulation for various applications, which is of primary importance.
 
   **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the body-force and time step.**
@@ -65,12 +66,21 @@
   A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).
 
 * **Force**
+* **Scheme**
+  
+  Scheme means the numerical discretization for the terms $\partial f/\partial t$ and $\partial f/\partial \bm{r}$. The most popular scheme is the so-called **stream-collision** scheme, which make the method similar to a particle-based solver. For the derivation, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998). This scheme will be the primary one for the HiLeMMS system. 
+
+  We can also employ other finite-difference scheme and time integration scheme. In the OPS backend,  we implement the first-order and second-order upwind scheme, and provide a general routine for time integration.
+
+  **We don't plan to support user-defined schemes at this stage.**
 
 * **Initial condition**
+  
   A initial condition of a specific problem is in general defined using macroscopic variables varying over space.  For a kinetic theory based method, however, we need to one more initialization  process,  i.e., transformation from macroscopic information into mesoscopic. In this sense, we can have different method, including equilibrium, Chapman-Enskog expansion, etc.
   In this project, **we will introduce a user-defined function, which depends on coordinates, node property etc, to initialize all macroscopic variables. The distribution may be initialized by providing a few default options including the equilibrium one. Of course, a user-defined function can also be introduced.**
 
 * **Boundary condition**
+* 
   Boundary may be split into two general types, i.e., the block boundary and the embedded boundary.  A block boundary is defined at a surface of  a block.
 
 * Embedded boundary condition
