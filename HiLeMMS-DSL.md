@@ -74,7 +74,7 @@
   Boundary may be split into two general types, i.e., the block boundary and the embedded boundary.  A block boundary is defined at a surface of  a block.
 
 * Embedded boundary condition
-*
+
 ### Remarks on the implementation
 
 * **Kernel function**
