@@ -5,6 +5,7 @@
 ### key elements and their abstraction of LBM simulation
 
 * **Geometry**
+  
   We assume that the Cartesian grid method (CGM) is employed to describe the geometry of either embedded solid bodies or envelops of flow field.  This technique copes very well with boundary that requiring no knowledge on geometry (e.g., bounce-back scheme), but may cause cumbersome operation if a geometry property (e.g., the normal)  is required.
 
   ![CGMMethod](./CGMMethod.gif)
@@ -47,28 +48,38 @@
 
   In a typical lattice Boltzmann simulation, a component is associated with a specific lattice set and a few macroscopic variables including density, velocity, temperature etc.  **Each component may have a few properties, e.g.,  viscosity, thermal diffusivity etc**. These properties often determine the relaxation time.
 
-  Since there may be multiple components in a simulation, we need a index for component to help specify the distribution and properties needed by a certain numerical operation.  Moreover, there are many discrete velocities for one component in general. Hence, we need more more index over the discrete velocity space to specify the distribution function, i.e., $f_\alpha^\sigma$ where $\sigma$ is the component index and $\alpha$ is the lattice (discrete velocity) index.
+  Since there may be multiple components in a simulation, we need a index for component to help specify the distribution and properties needed by a certain numerical operation.  Moreover, there are many discrete velocities for one component in general. Hence, we need more more index over the discrete velocity space to specify the distribution function, i.e., $`f_\alpha^\sigma`$ where $`\sigma`$ is the component index and $`\alpha`$ is the lattice (discrete velocity) index.
 
 * **Macroscopic variable**
+  
   There are two types of macroscopic variables, moments and others.  **Moments** are obtained by integrating the distribution function over the particle velocity space. For instance, the density is the zeroth order moment. In a number of applications, macroscopic variables other than moments are necessary.  For instance, the so-called solid fraction is introduced. Typically, such variables are not calculated from the distribution function.
 
   Regular moments can be obtained by pre-defined functions while users must provide user-defined functions.
 
   A confusing point for regular moments is the treatment of body force terms. If there is a body force, one needs to modify the manner of calculating moment, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998).
+* **Lattice model**
+  
+  A lattice model comprises of a set of lattices (e.g,D2Q9 and D3Q19), a set of weights corresponding to the lattices. Due to the connection with the discrete velocity method, lattices may also called discrete velocities and weights quadrature.    
 * **Equilibrium**
   
   Equilibrium function determines the capability of an lattice Boltzmann simulation for various applications, which is of primary importance.
 
-  **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the body-force and time step.**
+  **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the gradient, body-force, and time step. It may also need extra weights different from those belonging the lattice model**
 
   We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium function. A tricky issue is caused again by the DDF approach for the advection-diffusion problem, where the equilibrium function of the advection-diffusion part depends on the velocity governed by the momentum equations.
 
-  A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).
-
+  A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).  
 * **Force**
+  
+  At macroscopic level, the force (accelerations) will depend on the coordinates in general, either locally or non-locally. Local dependence is expected for external force fields while non-local dependence is expected for interactions between components. The force may also explicitly depend on time. 
+
+  For the force with local dependence, an option is to introduce a kernel function and then evaluate it in the global loop. The non-local will be more complicated and have to be defined using the facilities provided by the second phase. 
+
+  At mesoscopic level, the force can be described by using a few options, i.e., the distribution function may be approximated by the first-order polynomials, second-order polynomials etc. 
+
 * **Scheme**
   
-  Scheme means the numerical discretization for the terms $\partial f/\partial t$ and $\partial f/\partial \bm{r}$. The most popular scheme is the so-called **stream-collision** scheme, which make the method similar to a particle-based solver. For the derivation, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998). This scheme will be the primary one for the HiLeMMS system. 
+  Scheme means the numerical discretization for the terms $`\partial f/\partial t`$ and $`\partial f/\partial \bm{r}`$. The most popular scheme is the so-called **stream-collision** scheme, which make the method similar to a particle-based solver. For the derivation, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998). This scheme will be the primary one for the HiLeMMS system. 
 
   We can also employ other finite-difference scheme and time integration scheme. In the OPS backend,  we implement the first-order and second-order upwind scheme, and provide a general routine for time integration.
 
@@ -88,13 +99,20 @@
 ### Remarks on the implementation
 
 * **Kernel function**
+  
   A kernel function conducts a specific set of operations on a grid node. It will be populated to the whole flow field. Computationally, it is consistent with the definition of kernel function in such as the CUDA context.
 
   In writing/designing kernel function, it is better to use only C syntax. For instance, std::vector may not be recognized by the compiler for the device like GPU. This becomes a restrictive requirement when we need to deal with different choices of users.
+
+* **Loop**
+  
+  
 * **User-defined functions**
+  
   A user-defined function (UDF) is introduced by users to implement new functionalities. In general, a UDF will be a kernel function.
 
 * **Code generation**
+  
   Code generation is the process that generates UDFs automatically.
 
   Before thinking about the code generation, an intermediate step is to find how the UDF should be written.
