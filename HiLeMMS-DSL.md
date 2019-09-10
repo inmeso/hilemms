@@ -5,7 +5,7 @@
 ### key elements and their abstraction of LBM simulation
 
 * **Geometry**
-  
+
   We assume that the Cartesian grid method (CGM) is employed to describe the geometry of either embedded solid bodies or envelops of flow field.  This technique copes very well with boundary that requiring no knowledge on geometry (e.g., bounce-back scheme), but may cause cumbersome operation if a geometry property (e.g., the normal)  is required.
 
   ![CGMMethod](./CGMMethod.gif)
@@ -51,47 +51,47 @@
   Since there may be multiple components in a simulation, we need a index for component to help specify the distribution and properties needed by a certain numerical operation.  Moreover, there are many discrete velocities for one component in general. Hence, we need more more index over the discrete velocity space to specify the distribution function, i.e., $`f_\alpha^\sigma`$ where $`\sigma`$ is the component index and $`\alpha`$ is the lattice (discrete velocity) index.
 
 * **Macroscopic variable**
-  
+
   There are two types of macroscopic variables, moments and others.  **Moments** are obtained by integrating the distribution function over the particle velocity space. For instance, the density is the zeroth order moment. In a number of applications, macroscopic variables other than moments are necessary.  For instance, the so-called solid fraction is introduced. Typically, such variables are not calculated from the distribution function.
 
   Regular moments can be obtained by pre-defined functions while users must provide user-defined functions.
 
   A confusing point for regular moments is the treatment of body force terms. If there is a body force, one needs to modify the manner of calculating moment, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998).
 * **Lattice model**
-  
-  A lattice model comprises of a set of lattices (e.g,D2Q9 and D3Q19), a set of weights corresponding to the lattices. Due to the connection with the discrete velocity method, lattices may also called discrete velocities and weights quadrature.    
+
+  A lattice model comprises of a set of lattices (e.g,D2Q9 and D3Q19), a set of weights corresponding to the lattices. Due to the connection with the discrete velocity method, lattices may also called discrete velocities and weights quadrature.
 * **Equilibrium**
-  
+
   Equilibrium function determines the capability of an lattice Boltzmann simulation for various applications, which is of primary importance.
 
   **Each component will have its own equilibrium function. In general, this equilibrium function depends on moments associated with the component. In some models, it may also depend on the gradient, body-force, and time step. It may also need extra weights different from those belonging the lattice model**
 
   We will provide several existing form equilibrium function for users to choose using the DefineEquilibrium function. A tricky issue is caused again by the DDF approach for the advection-diffusion problem, where the equilibrium function of the advection-diffusion part depends on the velocity governed by the momentum equations.
 
-  A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).  
+  A user-defined function is needed if the user's equilibrium is not predefined. We will be able to automatically generate codes for user-defined functions (as defined in the second phase).
 * **Force**
-  
-  At macroscopic level, the force (accelerations) will depend on the coordinates in general, either locally or non-locally. Local dependence is expected for external force fields while non-local dependence is expected for interactions between components. The force may also explicitly depend on time. 
 
-  For the force with local dependence, an option is to introduce a kernel function and then evaluate it in the global loop. The non-local will be more complicated and have to be defined using the facilities provided by the second phase. 
+  At macroscopic level, the force (accelerations) will depend on the coordinates in general, either locally or non-locally. Local dependence is expected for external force fields while non-local dependence is expected for interactions between components. The force may also explicitly depend on time.
 
-  At mesoscopic level, the force can be described by using a few options, i.e., the distribution function may be approximated by the first-order polynomials, second-order polynomials etc. 
+  For the force with local dependence, an option is to introduce a kernel function and then evaluate it in the global loop. The non-local will be more complicated and have to be defined using the facilities provided by the second phase.
+
+  At mesoscopic level, the force can be described by using a few options, i.e., the distribution function may be approximated by the first-order polynomials, second-order polynomials etc.
 
 * **Scheme**
-  
-  Scheme means the numerical discretization for the terms $`\partial f/\partial t`$ and $`\partial f/\partial \bm{r}`$. The most popular scheme is the so-called **stream-collision** scheme, which make the method similar to a particle-based solver. For the derivation, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998). This scheme will be the primary one for the HiLeMMS system. 
+
+  Scheme means the numerical discretization for the terms $`\partial f/\partial t`$ and $`\partial f/\partial \bm{r}`$. The most popular scheme is the so-called **stream-collision** scheme, which make the method similar to a particle-based solver. For the derivation, please refer to Xiaoyi He, Shiyi Chen, and Gary D. Doolen, Journal of Computational Physics, 146, 282-300 (1998). This scheme will be the primary one for the HiLeMMS system.
 
   We can also employ other finite-difference scheme and time integration scheme. In the OPS backend,  we implement the first-order and second-order upwind scheme, and provide a general routine for time integration.
 
   **We don't plan to support user-defined schemes at this stage.**
 
 * **Initial condition**
-  
+
   A initial condition of a specific problem is in general defined using macroscopic variables varying over space.  For a kinetic theory based method, however, we need to one more initialization  process,  i.e., transformation from macroscopic information into mesoscopic. In this sense, we can have different method, including equilibrium, Chapman-Enskog expansion, etc.
   In this project, **we will introduce a user-defined function, which depends on coordinates, node property etc, to initialize all macroscopic variables. The distribution may be initialized by providing a few default options including the equilibrium one. Of course, a user-defined function can also be introduced.**
 
 * **Boundary condition**
-* 
+*
   Boundary may be split into two general types, i.e., the block boundary and the embedded boundary.  A block boundary is defined at a surface of  a block.
 
 * Embedded boundary condition
@@ -99,20 +99,20 @@
 ### Remarks on the implementation
 
 * **Kernel function**
-  
+
   A kernel function conducts a specific set of operations on a grid node. It will be populated to the whole flow field. Computationally, it is consistent with the definition of kernel function in such as the CUDA context.
 
   In writing/designing kernel function, it is better to use only C syntax. For instance, std::vector may not be recognized by the compiler for the device like GPU. This becomes a restrictive requirement when we need to deal with different choices of users.
 
 * **Loop**
-  
-  
+
+
 * **User-defined functions**
-  
+
   A user-defined function (UDF) is introduced by users to implement new functionalities. In general, a UDF will be a kernel function.
 
 * **Code generation**
-  
+
   Code generation is the process that generates UDFs automatically.
 
   Before thinking about the code generation, an intermediate step is to find how the UDF should be written.
@@ -374,7 +374,7 @@ f_\alpha =w_\alpha \rho_\alpha \left( {\textbf{c}_\alpha} \cdot \textbf{V}+\frac
 The code may looks that
 
 ```c++
-//all ID demostrated as varialbs are absolute indexation.
+//all ID demonstrated as variables are absolute indexation.
 //those in number literials are relative indexation.
 f[CompoVeloSpaIdx(compoId, xiIdx, 0, 0, 0)] =
 w[CompoVeloIdx(compoId,xiIdx)]*macroVars[CompoMacroSpaIdx(compoId,idOfRho,0,0,0)]*(
@@ -383,31 +383,5 @@ cy[CompoVeloIdx(compoId,xiIdx]*macroVars[CompoMacroSpaIdx(compoId,idOfv,0,0,0)]+
 cz[CompoVeloIdx(compoId,xiIdx]*macroVars[CompoMacroSpaIdx(compoId,idOfw,0,0,0)]+
 (macroVars[CompoMacroSpaIdx(compoId,idOfu,0,0,0)]-macroVars[CompoMacroSpaIdx(compoId,idOfu,-1,0,0)])/(X[SpaIdx(0,0,0)]-X[SpaIdx(-1,0,0)])
 )
-```
-
-
-## Enumerated types
-
-```c++
-enum VariableTypes {
-    Variable_Rho = 0,//Density
-    Variable_U = 1,//velocity
-    Variable_V = 2,//velocity
-    Variable_W = 3,//velocity
-    Variable_T = 4, //temperature
-    Variable_Qx = 5, //heat flux
-    Variable_Qy = 6, //heat flux
-    Variable_Qz = 7, //heat flux
-    Variable_Sigmaxx =8,//shear stress
-    Variable_Sigmaxy =9,//shear stress
-    Variable_Sigmaxz =10,//shear stress
-    Variable_Sigmayy =11,//shear stress
-    Variable_Sigmayz =12,//shear stress
-    Variable_Sigmazz =13,//shear stress
-    // variables that not calculated by using distribution
-    Variable_Independent =-1,
-    // variables calculated by using self-defined althrithm
-    Variable_SelfDefined = -2
-};
 ```
 
